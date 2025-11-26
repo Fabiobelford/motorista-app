@@ -1,0 +1,14 @@
+# Dependências
+node_modules/
+package-lock.json
+
+# Ambiente
+.env
+.env.local
+
+# Banco de dados local
+motoristas.db
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
