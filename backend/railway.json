@@ -1,0 +1,9 @@
+{
+  "build": {
+    "builder": "nixpacks",
+    "config": {
+      "apt": [],
+      "nixpkgs": ["nodejs"]
+    }
+  }
+}
