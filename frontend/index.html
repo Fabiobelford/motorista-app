@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Motorista de Aplicativo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            border: none;
+            background: #f0f0f0;
+            color: #333;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .motorista-card {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .motorista-card h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .motorista-card p {
+            color: #666;
+            font-size: 14px;
+            margin: 3px 0;
+        }
+
+        .select-motorista {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .records-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .record-item {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            font-size: 13px;
+        }
+
+        .record-item .date {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .record-item .details {
+            color: #666;
+            line-height: 1.4;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: #333;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚗 Motorista App</h1>
+        <p class="subtitle">Gerencie seus ganhos e custos</p>
+
+        <!-- ALERTAS -->
+        <div id="alertContainer"></div>
+
+        <!-- ABAS -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="abrirAba('cadastro')">Cadastro</button>
+            <button class="tab-btn" onclick="abrirAba('custos')">Custos</button>
+            <button class="tab-btn" onclick="abrirAba('registro')">Registro</button>
+            <button class="tab-btn" onclick="abrirAba('relatorio')">Relatório</button>
+        </div>
+
+        <!-- ABA 1: CADASTRO -->
+        <div id="cadastro" class="tab-content active">
+            <h2>Novo Cadastro</h2>
+            <form onsubmit="cadastrarMotorista(event)">
+                <div class="form-group">
+                    <label>Nome Completo *</label>
+                    <input type="text" id="nome" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefone / WhatsApp *</label>
+                    <input type="tel" id="telefone" placeholder="(85) 99999-9999" required>
+                </div>
+                <div class="form-group">
+                    <label>Modelo do Carro *</label>
+                    <input type="text" id="modelo_carro" placeholder="ex: Chevrolet Onix Plus" required>
+                </div>
+                <div class="form-group">
+                    <label>Consumo Médio (km/l) *</label>
+                    <input type="number" id="consumo_medio" step="0.1" placeholder="ex: 12.5" required>
+                </div>
+                <button type="submit">Cadastrar</button>
+            </form>
+        </div>
+
+        <!-- ABA 2: CUSTOS OPERACIONAIS -->
+        <div id="custos" class="tab-content">
+            <h2>Custos Operacionais</h2>
+            
+            <div class="select-motorista">
+                <label>Selecione o Motorista *</label>
+                <select id="motorista_custos" onchange="carregarCustos()">
+                    <option value="">-- Escolha um motorista --</option>
+                </select>
+            </div>
+
+            <form onsubmit="registrarCustos(event)">
+                <div class="form-group">
+                    <label>Combustível - Preço por km (R$)</label>
+                    <input type="number" id="combustivel_preco_km" step="0.01" placeholder="ex: 0.45">
+                </div>
+                <div class="form-group">
+                    <label>Manutenção Mensal (R$)</label>
+                    <input type="number" id="manutencao_mensal" step="0.01" placeholder="ex: 1300">
+                </div>
+                <div class="form-group">
+                    <label>Seguro (R$)</label>
+                    <input type="number" id="seguro" step="0.01" placeholder="ex: 150">
+                </div>
+                <div class="form-group">
+                    <label>IPVA (R$)</label>
+                    <input type="number" id="ipva" step="0.01" placeholder="ex: 200">
+                </div>
+                <div class="form-group">
+                    <label>Aluguel do Carro (R$)</label>
+                    <input type="number" id="aluguel_carro" step="0.01" placeholder="ex: 800">
+                </div>
+                <div class="form-group">
+                    <label>Parcela Financiamento (R$)</label>
+                    <input type="number" id="parcela_financiamento" step="0.01" placeholder="ex: 600">
+                </div>
+                <div class="form-group">
+                    <label>Outros Custos (R$)</label>
+                    <input type="number" id="outros_custos" step="0.01" placeholder="ex: 100">
+                </div>
+                <button type="submit">Salvar Custos</button>
+            </form>
+        </div>
+
+        <!-- ABA 3: REGISTRO DIÁRIO -->
+        <div id="registro" class="tab-content">
+            <h2>Registro Diário</h2>
+            
+            <div class="select-motorista">
+                <label>Selecione o Motorista *</label>
+                <select id="motorista_registro" required>
+                    <option value="">-- Escolha um motorista --</option>
+                </select>
+            </div>
+
+            <form onsubmit="registrarDia(event)">
+                <div class="form-group">
+                    <label>Data *</label>
+                    <input type="date" id="data_registro" required>
+                </div>
+                <div class="form-group">
+                    <label>Horas Online *</label>
+                    <input type="number" id="horas_online" step="0.5" placeholder="ex: 12" required>
+                </div>
+                <div class="form-group">
+                    <label>km Rodados *</label>
+                    <input type="number" id="km_rodados" step="0.1" placeholder="ex: 180" required>
+                </div>
+                <div class="form-group">
+                    <label>Ganho Bruto (R$) *</label>
+                    <input type="number" id="ganho_bruto" step="0.01" placeholder="ex: 250.50" required>
+                </div>
+                <div class="form-group">
+                    <label>Combustível Gasto (R$) *</label>
+                    <input type="number" id="combustivel_gasto" step="0.01" placeholder="ex: 45" required>
+                </div>
+                <div class="form-group">
+                    <label>Outras Despesas (R$)</label>
+                    <input type="number" id="outras_despesas" step="0.01" placeholder="ex: 10">
+                </div>
+                <button type="submit">Salvar Registro</button>
+            </form>
+        </div>
+
+        <!-- ABA 4: RELATÓRIO -->
+        <div id="relatorio" class="tab-content">
+            <h2>Análise de Lucro</h2>
+            
+            <div class="select-motorista">
+                <label>Selecione o Motorista *</label>
+                <select id="motorista_relatorio" onchange="carregarRelatorio()">
+                    <option value="">-- Escolha um motorista --</option>
+                </select>
+            </div>
+
+            <div id="relatorio_content"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        let motoristas = [];
+
+        // Função para abrir abas
+        function abrirAba(abaNome) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(abaNome).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (abaNome === 'custos' || abaNome === 'registro' || abaNome === 'relatorio') {
+                carregarMotoristas();
+            }
+        }
+
+        // Mostrar alerta
+        function mostrarAlerta(mensagem, tipo = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert ${tipo}`;
+            alert.textContent = mensagem;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        // Carregar todos os motoristas
+        async function carregarMotoristas() {
+            try {
+                const response = await fetch(`${API_URL}/motoristas`);
+                motoristas = await response.json();
+                
+                const selects = ['motorista_custos', 'motorista_registro', 'motorista_relatorio'];
+                selects.forEach(id => {
+                    const select = document.getElementById(id);
+                    select.innerHTML = '<option value="">-- Escolha um motorista --</option>';
+                    motoristas.forEach(m => {
+                        const option = document.createElement('option');
+                        option.value = m.id;
+                        option.textContent = `${m.nome} (${m.modelo_carro})`;
+                        select.appendChild(option);
+                    });
+                });
+            } catch (error) {
+                mostrarAlerta('Erro ao carregar motoristas', 'error');
+            }
+        }
+
+        // CADASTRO DE MOTORISTA
+        async function cadastrarMotorista(event) {
+            event.preventDefault();
+            
+            const dados = {
+                nome: document.getElementById('nome').value,
+                telefone: document.getElementById('telefone').value,
+                modelo_carro: document.getElementById('modelo_carro').value,
+                consumo_medio: parseFloat(document.getElementById('consumo_medio').value)
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/motoristas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await response.json();
+                
+                if (response.ok) {
+                    mostrarAlerta(`✅ ${resultado.mensagem}`);
+                    event.target.reset();
+                    carregarMotoristas();
+                } else {
+                    mostrarAlerta(`❌ ${resultado.erro}`, 'error');
+                }
+            } catch (error) {
+                mostrarAlerta('Erro ao cadastrar', 'error');
+            }
+        }
+
+        // REGISTRAR CUSTOS
+        async function registrarCustos(event) {
+            event.preventDefault();
+            
+            const motorista_id = document.getElementById('motorista_custos').value;
+            if (!motorista_id) {
+                mostrarAlerta('Selecione um motorista', 'error');
+                return;
+            }
+
+            const dados = {
+                combustivel_preco_km: parseFloat(document.getElementById('combustivel_preco_km').value) || 0,
+                manutencao_mensal: parseFloat(document.getElementById('manutencao_mensal').value) || 0,
+                seguro: parseFloat(document.getElementById('seguro').value) || 0,
+                ipva: parseFloat(document.getElementById('ipva').value) || 0,
+                aluguel_carro: parseFloat(document.getElementById('aluguel_carro').value) || 0,
+                parcela_financiamento: parseFloat(document.getElementById('parcela_financiamento').value) || 0,
+                outros_custos: parseFloat(document.getElementById('outros_custos').value) || 0
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/custos/${motorista_id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await response.json();
+                
+                if (response.ok) {
+                    mostrarAlerta(`✅ ${resultado.mensagem}`);
+                    event.target.reset();
+                } else {
+                    mostrarAlerta(`❌ ${resultado.erro}`, 'error');
+                }
+            } catch (error) {
+                mostrarAlerta('Erro ao salvar custos', 'error');
+            }
+        }
+
+        // REGISTRAR DIA
+        async function registrarDia(event) {
+            event.preventDefault();
+            
+            const motorista_id = document.getElementById('motorista_registro').value;
+            if (!motorista_id) {
+                mostrarAlerta('Selecione um motorista', 'error');
+                return;
+            }
+
+            const dados = {
+                data_registro: document.getElementById('data_registro').value,
+                horas_online: parseFloat(document.getElementById('horas_online').value),
+                km_rodados: parseFloat(document.getElementById('km_rodados').value),
+                ganho_bruto: parseFloat(document.getElementById('ganho_bruto').value),
+                combustivel_gasto: parseFloat(document.getElementById('combustivel_gasto').value),
+                outras_despesas: parseFloat(document.getElementById('outras_despesas').value) || 0
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/registros/${motorista_id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await response.json();
+                
+                if (response.ok) {
+                    mostrarAlerta(`✅ ${resultado.mensagem}`);
+                    event.target.reset();
+                } else {
+                    mostrarAlerta(`❌ ${resultado.erro}`, 'error');
+                }
+            } catch (error) {
+                mostrarAlerta('Erro ao registrar dia', 'error');
+            }
+        }
+
+        // CARREGAR RELATÓRIO
+        async function carregarRelatorio() {
+            const motorista_id = document.getElementById('motorista_relatorio').value;
+            const conteudo = document.getElementById('relatorio_content');
+            
+            if (!motorista_id) {
+                conteudo.innerHTML = '';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/registros/${motorista_id}`);
+                const registros = await response.json();
+
+                if (registros.length === 0) {
+                    conteudo.innerHTML = '<p style="color: #999; text-align: center;">Nenhum registro encontrado</p>';
+                    return;
+                }
+
+                let totalGanho = 0;
+                let totalCombustivel = 0;
+                let totalOutrasDespesas = 0;
+                let totalHoras = 0;
+                let totalKm = 0;
+
+                let html = '<div class="records-list">';
+                
+                registros.forEach(r => {
+                    const lucro = r.ganho_bruto - r.combustivel_gasto - (r.outras_despesas || 0);
+                    const ganhoHora = (lucro / r.horas_online).toFixed(2);
+                    const ganhokm = (lucro / r.km_rodados).toFixed(2);
+
+                    html += `
+                        <div class="record-item">
+                            <div class="date">📅 ${r.data_registro}</div>
+                            <div class="details">
+                                <strong>Ganho Bruto:</strong> R$ ${r.ganho_bruto.toFixed(2)}<br>
+                                <strong>Combustível:</strong> -R$ ${r.combustivel_gasto.toFixed(2)}<br>
+                                <strong>Outras Despesas:</strong> -R$ ${(r.outras_despesas || 0).toFixed(2)}<br>
+                                <strong>Lucro Líquido:</strong> R$ ${lucro.toFixed(2)}<br>
+                                <strong>Horas:</strong> ${r.horas_online}h | <strong>KM:</strong> ${r.km_rodados}km<br>
+                                <strong>Ganho/Hora:</strong> R$ ${ganhoHora} | <strong>Ganho/KM:</strong> R$ ${ganhokm}
+                            </div>
+                        </div>
+                    `;
+
+                    totalGanho += r.ganho_bruto;
+                    totalCombustivel += r.combustivel_gasto;
+                    totalOutrasDespesas += r.outras_despesas || 0;
+                    totalHoras += r.horas_online;
+                    totalKm += r.km_rodados;
+                });
+
+                html += '</div>';
+
+                const lucroTotal = totalGanho - totalCombustivel - totalOutrasDespesas;
+                const ganhoMedioHora = (lucroTotal / totalHoras).toFixed(2);
+                const ganhoMedioKm = (lucroTotal / totalKm).toFixed(2);
+
+                conteudo.innerHTML = `
+                    <div class="dashboard-grid">
+                        <div class="stat-card">
+                            <h4>Lucro Líquido</h4>
+                            <div class="value">R$ ${lucroTotal.toFixed(2)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Ganho/Hora</h4>
+                            <div class="value">R$ ${ganhoMedioHora}</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Ganho/KM</h4>
+                            <div class="value">R$ ${ganhoMedioKm}</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Total de Horas</h4>
+                            <div class="value">${totalHoras}h</div>
+                        </div>
+                    </div>
+                    <h3>Histórico</h3>
+                    ${html}
+                `;
+            } catch (error) {
+                conteudo.innerHTML = '<p style="color: #999; text-align: center;">Erro ao carregar relatório</p>';
+            }
+        }
+
+        async function carregarCustos() {
+            // Função para carregar custos já salvos (opcional)
+        }
+
+        // Carregar motoristas ao abrir
+        window.addEventListener('load', () => {
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('data_registro').value = hoje;
+        });
+    </script>
+</body>
+</html>
