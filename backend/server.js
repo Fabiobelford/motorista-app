@@ -6,7 +6,11 @@ const pool = require('./database-postgres');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'https://motorista-app-iota.vercel.app',
+  credentials: true
+}));
+
 app.use(express.json());
 
 // ROTA 1: Cadastrar novo motorista
